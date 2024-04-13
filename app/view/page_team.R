@@ -6,6 +6,7 @@ box::use(
 
 box::use(
   app/view/player_card,
+  app/view/team_positions,
   app/logic/utils[prettify_cost]
 )
 
@@ -14,10 +15,10 @@ ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$tagList(
     shiny$uiOutput(ns("team_stats"), class = "d-flex flex-row gap-4"),
-    shiny$uiOutput(ns("forwards"), class = "d-flex flex-row justify-content-center gap-2"),
-    shiny$uiOutput(ns("midfielders"), class = "d-flex flex-row justify-content-center gap-2"),
-    shiny$uiOutput(ns("defenders"), class = "d-flex flex-row justify-content-center gap-2"),
-    shiny$uiOutput(ns("goalkeeper"), class = "d-flex flex-row justify-content-center gap-2")
+    team_positions$ui(ns("forwards")),
+    team_positions$ui(ns("mids")),
+    team_positions$ui(ns("defs")),
+    team_positions$ui(ns("gk"))
   )
 }
 
@@ -61,113 +62,10 @@ server <- function(id, team) {
       
     })
     
-    output$forwards <- shiny$renderUI({
-      shiny$req(team())
-      forwards <- keep(team(), \(player) player$position == "FWD")
-
-      card_ids <- map_chr(forwards, \(player) paste0("card_", player$player_id))
-      card_ids_ns <- map(card_ids, ns)
-
-      player_cards <- map2(
-        card_ids_ns,
-        forwards,
-        \(id, player) {
-          player_card$ui(id, player, TRUE)
-        }
-      )
-
-      map2(
-        card_ids,
-        forwards,
-        \(id, player) {
-          player_card$server(id, player, team)
-        }
-      )
-
-      player_cards
-
-    })
-    
-    output$midfielders <- shiny$renderUI({
-      shiny$req(team())
-      forwards <- keep(team(), \(player) player$position == "MID")
-      
-      card_ids <- map_chr(forwards, \(player) paste0("card_", player$player_id))
-      card_ids_ns <- map(card_ids, ns)
-      
-      player_cards <- map2(
-        card_ids_ns,
-        forwards,
-        \(id, player) {
-          player_card$ui(id, player, TRUE)
-        }
-      )
-      
-      map2(
-        card_ids,
-        forwards,
-        \(id, player) {
-          player_card$server(id, player, team)
-        }
-      )
-      
-      player_cards
-      
-    })
-    
-    output$defenders <- shiny$renderUI({
-      shiny$req(team())
-      forwards <- keep(team(), \(player) player$position == "DEF")
-      
-      card_ids <- map_chr(forwards, \(player) paste0("card_", player$player_id))
-      card_ids_ns <- map(card_ids, ns)
-      
-      player_cards <- map2(
-        card_ids_ns,
-        forwards,
-        \(id, player) {
-          player_card$ui(id, player, TRUE)
-        }
-      )
-      
-      map2(
-        card_ids,
-        forwards,
-        \(id, player) {
-          player_card$server(id, player, team)
-        }
-      )
-      
-      player_cards
-      
-    })
-    
-    output$goalkeeper <- shiny$renderUI({
-      shiny$req(team())
-      forwards <- keep(team(), \(player) player$position == "GK")
-      
-      card_ids <- map_chr(forwards, \(player) paste0("card_", player$player_id))
-      card_ids_ns <- map(card_ids, ns)
-      
-      player_cards <- map2(
-        card_ids_ns,
-        forwards,
-        \(id, player) {
-          player_card$ui(id, player, TRUE)
-        }
-      )
-      
-      map2(
-        card_ids,
-        forwards,
-        \(id, player) {
-          player_card$server(id, player, team)
-        }
-      )
-      
-      player_cards
-      
-    })
+    team_positions$server("forwards", "FWD", team)
+    team_positions$server("mids", "MID", team)
+    team_positions$server("defs", "DEF", team)
+    team_positions$server("gk", "GK", team)
     
   })
 }
