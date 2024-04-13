@@ -40,16 +40,7 @@ server <- function(id) {
     
     all_players <- readRDS(config$get("players"))
     team <- reactiveVal()
-    Players$new()
-    Team$new()
     
-    # ---------- notes ------------
-    # could we have page_players return the team object?
-    # it may help solidify the point that it's just a middle man
-    # and from it's viewpoint, team is just a bookkeeping task
-    # which means it's a potential failure point from a simple mistake, that
-    #  shouldn't have any affect
-    # maybe don't even take it as an argument too
     page_players$server("players", all_players, team)
     page_team$server("team", team)
     
