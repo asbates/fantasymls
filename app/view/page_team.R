@@ -13,8 +13,9 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
-  shiny$tagList(
-    shiny$uiOutput(ns("team_stats"), class = "d-flex flex-row gap-4"),
+  shiny$tags$div(
+    class = "p-4 m-4",
+    shiny$uiOutput(ns("team_stats"), class = "d-flex flex-row gap-4 mb-2"),
     team_positions$ui(ns("forwards")),
     team_positions$ui(ns("mids")),
     team_positions$ui(ns("defs")),
@@ -45,17 +46,17 @@ server <- function(id, team) {
       shiny$tagList(
         shiny$tags$div(
           class = "d-flex flex-column align-items-center",
-          shiny$tags$h5("Cost"),
+          shiny$tags$h5("Cost", class = "text-primary-emphasis"),
           shiny$tags$span(prettify_cost(total_cost))
         ),
         shiny$tags$div(
           class = "d-flex flex-column align-items-center",
-          shiny$tags$h5("Average Points"),
+          shiny$tags$h5("Average Points", class = "text-primary-emphasis"),
           shiny$tags$span(total_avg_points)
         ),
         shiny$tags$div(
           class = "d-flex flex-column align-items-center",
-          shiny$tags$h5("Projected Points"),
+          shiny$tags$h5("Projected Points", class = "text-primary-emphasis"),
           shiny$tags$span(total_projected_points)
         )
       )

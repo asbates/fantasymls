@@ -14,7 +14,8 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- shiny$NS(id)
-  shiny$tagList(
+  shiny$tags$div(
+    class = "p-4 m-4",
     shiny$tags$div(
       players_filter$ui(ns("filters")),
       players_sort$ui(ns("sort"))
@@ -79,7 +80,7 @@ server <- function(id, all_players, team) {
       )
       
       bslib$layout_column_wrap(
-        width = 1/3,
+        width = 1/4,
         !!!player_cards
       )
       

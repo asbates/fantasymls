@@ -13,7 +13,10 @@ box::use(
 ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$tagList(
-    shiny$uiOutput(ns("container"), class = "d-flex flex-row justify-content-center gap-2")
+    shiny$uiOutput(
+      ns("container"),
+      class = "d-flex flex-row justify-content-center gap-3 mb-3"
+    )
   )
 }
 

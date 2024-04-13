@@ -17,8 +17,6 @@ ui <- function(id, player, teams_page = FALSE, on_team = FALSE) {
   ns <- shiny$NS(id)
   
   card <-   bslib$card(
-    height = 300,
-    width = 100,
     bslib$card_body(
       bslib$navset_underline(
         bslib$nav_panel(
@@ -77,20 +75,24 @@ ui <- function(id, player, teams_page = FALSE, on_team = FALSE) {
 
 player_summary_ui <- function(player) {
   shiny$tags$div(
-    class = "d-flex flex-column gap-3 mt-2",
+    class = "d-flex flex-column gap-3 mt-3 align-items-center",
+    shiny$tags$h3(player$known_name, class="text-primary-emphasis"),
+    shiny$tags$p(player$position, ", ", player$squad$name),
+    shiny$tags$p(
+      class = "fs-4",
+      prettify_cost(player$cost)
+    ),
     shiny$tags$div(
-      class = "d-flex flex-row flex-wrap gap-2",
-      shiny$tags$div(
-        class = "d-flex flex-column",
-        shiny$tags$p(shiny$tags$strong("Name: "), player$known_name),
-        shiny$tags$p(shiny$tags$strong("Team: "), player$squad$name),
-        shiny$tags$p(shiny$tags$strong("Salary: "), prettify_cost(player$cost))
+      class = "d-flex flex-row gap-2 justify-content-evenly",
+      shiny$tags$p(
+        shiny$tags$span(class = "text-primary-emphasis", "Average Points: "),
+        player$stats$avg_points
       ),
-      shiny$tags$div(
-        class = "d-flex flex-column",
-        shiny$tags$p(shiny$tags$strong("Average Points: "), player$stats$avg_points),
-        shiny$tags$p(shiny$tags$strong("Season Rank: "), player$stats$season_rank),
-        shiny$tags$p(shiny$tags$strong("Owned by: "), percent(player$stats$owned_by))
+      shiny$tags$p(
+        shiny$tags$span(
+          class="text-primary-emphasis", "Rank: "
+        ),
+        player$stats$season_rank
       )
     )
   )
@@ -100,21 +102,17 @@ player_points_ui <- function(ns, player) {
   shiny$tags$div(
     class = "d-flex flex-column gap-3 mt-2",
     shiny$tags$div(
-      shiny$tags$strong("Total Points: "),
-      shiny$tags$span(player$stats$total_points)
+      class = "d-flex flex-row gap-2 justify-content-evenly",
+      shiny$tags$p(
+        shiny$tags$span(class = "text-primary-emphasis" , "Total Points: "),
+        player$stats$total_points
+      ),
+      shiny$tags$p(
+        shiny$tags$span(class = "text-primary-emphasis", "Average Points: "),
+        player$stats$avg_points
+      )
     ),
-    shiny$tags$div(
-      shiny$tags$strong("Last Game Points: "),
-      shiny$tags$span(player$stats$last_match_points)
-    ),
-    shiny$tags$div(
-      shiny$tags$strong("Average Points: "),
-      shiny$tags$span(player$stats$avg_points)
-    ),
-    shiny$tags$div(
-      shiny$tags$strong("Season Points"),
-      echarts4r$echarts4rOutput(ns("season_points"))
-    )
+    echarts4r$echarts4rOutput(ns("season_points"), height = 300)
   )
 }
 
@@ -122,19 +120,17 @@ player_salary_ui <- function(ns, player) {
   shiny$tags$div(
     class = "d-flex flex-column gap-3 mt-2",
     shiny$tags$div(
-      shiny$tags$strong("Current Salary: "),
-      shiny$tags$span(
+      class = "d-flex flex-row gap-2 justify-content-evenly",
+      shiny$tags$p(
+        shiny$tags$span(class = "text-primary-emphasis", "Current Salary: "),
         prettify_cost(as.numeric(tail(player$stats$prices, 1)))
+      ),
+      shiny$tags$p(
+        shiny$tags$span(class = "text-primary-emphasis", "Average Salary: "),
+        prettify_cost(mean(as.numeric(player$stats$prices)))
       )
     ),
-    shiny$tags$div(
-      shiny$tags$strong("Average Salary: "),
-      prettify_cost(mean(as.numeric(player$stats$prices)))
-    ),
-    shiny$tags$div(
-      shiny$tags$strong("Season Salary"),
-      echarts4r$echarts4rOutput(ns("season_salary"))
-    )
+    echarts4r$echarts4rOutput(ns("season_salary"), height = 300)
   )
 }
 
@@ -184,7 +180,8 @@ server <- function(id, player, team) {
         echarts4r$e_tooltip() |> 
         echarts4r$e_legend(show = FALSE) |> 
         echarts4r$e_color("#78c2ad") |> 
-        echarts4r$e_format_y_axis(prefix = "$", suffix = "M")
+        echarts4r$e_format_y_axis(prefix = "$", suffix = "M") |> 
+        echarts4r::e_grid(left = "15%")
       
     })
     
