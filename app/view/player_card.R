@@ -13,7 +13,7 @@ box::use(
 )
 
 #' @export
-ui <- function(id, player, teams_page = FALSE) {
+ui <- function(id, player, teams_page = FALSE, on_team = FALSE) {
   ns <- shiny$NS(id)
   
   card <-   bslib$card(
@@ -48,13 +48,26 @@ ui <- function(id, player, teams_page = FALSE) {
       )
     )
   } else {
+    
+    if (on_team) {
+      add_btn <- disabled(shiny$actionButton(ns("add"), class = "btn-primary", "Add"))
+    } else {
+      add_btn <- shiny$actionButton(ns("add"), class = "btn-primary", "Add")
+    }
+    
+    if (on_team) {
+      remove_btn <- shiny$actionButton(ns("remove"), "Remove")
+    } else {
+      remove_btn <- disabled(shiny$actionButton(ns("remove"), "Remove"))
+    }
+    
     shiny$tagAppendChild(
       card,
       bslib$card_footer(
         shiny$tags$div(
           class = "btn-group d-flex",
-          shiny$actionButton(ns("add"), class = "btn-primary", "Add"),
-          disabled(shiny$actionButton(ns("remove"), "Remove"))
+          add_btn,
+          remove_btn
         )
       )
     )
@@ -175,11 +188,9 @@ server <- function(id, player, team) {
       
     })
     
-    shiny$observeEvent(input$add, {
+    session$userData$add_observers[[id]] <- shiny$observeEvent(input$add, {
       
       if (player_is_addable(player, team())) {
-        disable("add")
-        enable("remove")
         team(
           append(team(), list(player))
         )
@@ -187,15 +198,24 @@ server <- function(id, player, team) {
       
     })
     
-    shiny$observeEvent(input$remove, {
+    session$userData$remove_observerse[[id]] <- shiny$observeEvent(input$remove, {
       if (is.null(team())) {
         return()
       } else {
-        enable("add")
-        disable("remove")
         team(
           discard(team(), \(plr) plr$player_id == player$player_id)
         )
+      }
+    })
+    
+    shiny$observeEvent(team(), {
+      player_ids <- map_chr(team(), \(player) player$player_id)
+      if (player$player_id %in% player_ids) {
+        disable("add")
+        enable("remove")
+      } else {
+        enable("add")
+        disable("remove")
       }
     })
     

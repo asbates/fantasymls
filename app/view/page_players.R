@@ -1,7 +1,7 @@
 box::use(
   bslib,
   config,
-  purrr[map, map2, map_dbl, map_chr, pluck, keep],
+  purrr[map, map2, walk, map_chr],
   shiny,
 )
 
@@ -37,11 +37,36 @@ server <- function(id, all_players, team) {
       card_ids <- map_chr(players_filtered_sorted(), \(player) paste0("card_", player$player_id))
       card_ids_ns <- map(card_ids, ns)
       
+      walk(
+        names(session$userData$add_observers),
+        \(observer_id) {
+          if (observer_id %in% card_ids) {
+            session$userData$add_observers[[observer_id]]$destroy()
+            session$userData$add_observers[[observer_id]] <- NULL
+          }
+        }
+      )
+      walk(
+        names(session$userData$remove_observers),
+        \(observer_id) {
+          if (observer_id %in% card_ids) {
+            session$userData$remove_observers[[observer_id]]$destroy()
+            session$userData$remove_observers[[observer_id]] <- NULL
+          }
+        }
+      )
+      
+      team_player_ids <- map_chr(shiny$isolate(team()), \(player) player$player_id)
+      
       player_cards <- map2(
         card_ids_ns,
         players_filtered_sorted(),
         \(id, player) {
-          player_card$ui(id, player)
+          on_team <- 
+            if (length(team_player_ids) > 0 && 
+                player$player_id %in% team_player_ids)
+              TRUE else FALSE
+          player_card$ui(id, player, on_team = on_team)
         }
       )
       
