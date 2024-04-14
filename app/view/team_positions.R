@@ -10,12 +10,12 @@ box::use(
 )
 
 #' @export
-ui <- function(id) {
+ui <- function(id, position) {
   ns <- shiny$NS(id)
   shiny$tagList(
     shiny$uiOutput(
       ns("container"),
-      class = "d-flex flex-row justify-content-center gap-3 mb-3"
+      class = paste("mb-4", position)
     )
   )
 }

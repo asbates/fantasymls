@@ -15,11 +15,11 @@ ui <- function(id) {
   ns <- shiny$NS(id)
   shiny$tags$div(
     class = "p-4 m-4",
-    shiny$uiOutput(ns("team_stats"), class = "d-flex flex-row gap-4 mb-2"),
-    team_positions$ui(ns("forwards")),
-    team_positions$ui(ns("mids")),
-    team_positions$ui(ns("defs")),
-    team_positions$ui(ns("gk"))
+    shiny$uiOutput(ns("team_stats"), class = "d-flex flex-row gap-4 mb-4"),
+    team_positions$ui(ns("forwards"), "FWD"),
+    team_positions$ui(ns("mids"), "MID"),
+    team_positions$ui(ns("defs"), "DEF"),
+    team_positions$ui(ns("gk"), "GK")
   )
 }
 

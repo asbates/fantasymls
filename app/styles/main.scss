@@ -1,0 +1,30 @@
+.FWD {
+ display: grid;
+ grid-template-columns: repeat(2, minmax(200px, 0.3fr));
+ grid-auto-rows: 1fr;
+ place-content: center;
+ gap: 1rem;
+}
+
+.MID {
+ display: grid;
+ grid-template-columns: repeat(4, minmax(200px, 1fr));
+ grid-auto-rows: 1fr;
+ place-content: center;
+ gap: 1rem;
+}
+
+.DEF {
+ display: grid;
+ grid-template-columns: repeat(4, minmax(200px, 1fr));
+ grid-auto-rows: 1fr;
+ place-content: center;
+ gap: 1rem;
+}
+
+.GK {
+ display: grid;
+ grid-template-columns: minmax(200px, 0.3fr);
+ grid-auto-rows: 1fr;
+ place-content: center;
+}
