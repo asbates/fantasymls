@@ -1,0 +1,176 @@
+[
+  {
+    "id": 11091,
+    "full_name": "Atlanta United FC",
+    "name": "Atlanta United FC",
+    "short_name": "ATL"
+  },
+  {
+    "id": 15296,
+    "full_name": "Austin FC",
+    "name": "Austin FC",
+    "short_name": "ATX"
+  },
+  {
+    "id": 1616,
+    "full_name": "CF Montreal",
+    "name": "CF Montreal",
+    "short_name": "MTL"
+  },
+  {
+    "id": 16629,
+    "full_name": "Charlotte FC",
+    "name": "Charlotte FC",
+    "short_name": "CLT"
+  },
+  {
+    "id": 1207,
+    "full_name": "Chicago Fire FC",
+    "name": "Chicago Fire FC",
+    "short_name": "CHI"
+  },
+  {
+    "id": 436,
+    "full_name": "Colorado Rapids",
+    "name": "Colorado Rapids",
+    "short_name": "COL"
+  },
+  {
+    "id": 454,
+    "full_name": "Columbus Crew",
+    "name": "Columbus Crew",
+    "short_name": "CLB"
+  },
+  {
+    "id": 1326,
+    "full_name": "D.C. United",
+    "name": "D.C. United",
+    "short_name": "DC"
+  },
+  {
+    "id": 11504,
+    "full_name": "FC Cincinnati",
+    "name": "FC Cincinnati",
+    "short_name": "CIN"
+  },
+  {
+    "id": 1903,
+    "full_name": "FC Dallas",
+    "name": "FC Dallas",
+    "short_name": "DAL"
+  },
+  {
+    "id": 1897,
+    "full_name": "Houston Dynamo FC",
+    "name": "Houston Dynamo FC",
+    "short_name": "HOU"
+  },
+  {
+    "id": 14880,
+    "full_name": "Inter Miami CF",
+    "name": "Inter Miami CF",
+    "short_name": "MIA"
+  },
+  {
+    "id": 1230,
+    "full_name": "LA Galaxy",
+    "name": "LA Galaxy",
+    "short_name": "LA"
+  },
+  {
+    "id": 11690,
+    "full_name": "Los Angeles FC",
+    "name": "Los Angeles FC",
+    "short_name": "LAFC"
+  },
+  {
+    "id": 6977,
+    "full_name": "Minnesota United FC",
+    "name": "Minnesota United FC",
+    "short_name": "MIN"
+  },
+  {
+    "id": 15154,
+    "full_name": "Nashville SC",
+    "name": "Nashville SC",
+    "short_name": "NSH"
+  },
+  {
+    "id": 928,
+    "full_name": "New England Revolution",
+    "name": "New England Revolution",
+    "short_name": "NE"
+  },
+  {
+    "id": 9668,
+    "full_name": "New York City FC",
+    "name": "New York City FC",
+    "short_name": "NYC"
+  },
+  {
+    "id": 399,
+    "full_name": "New York Red Bulls",
+    "name": "New York Red Bulls",
+    "short_name": "RBNY"
+  },
+  {
+    "id": 6900,
+    "full_name": "Orlando City SC",
+    "name": "Orlando City SC",
+    "short_name": "ORL"
+  },
+  {
+    "id": 5513,
+    "full_name": "Philadelphia Union",
+    "name": "Philadelphia Union",
+    "short_name": "PHI"
+  },
+  {
+    "id": 1581,
+    "full_name": "Portland Timbers",
+    "name": "Portland Timbers",
+    "short_name": "POR"
+  },
+  {
+    "id": 1899,
+    "full_name": "Real Salt Lake",
+    "name": "Real Salt Lake",
+    "short_name": "RSL"
+  },
+  {
+    "id": 1131,
+    "full_name": "San Jose Earthquakes",
+    "name": "San Jose Earthquakes",
+    "short_name": "SJ"
+  },
+  {
+    "id": 3500,
+    "full_name": "Seattle Sounders FC",
+    "name": "Seattle Sounders FC",
+    "short_name": "SEA"
+  },
+  {
+    "id": 421,
+    "full_name": "Sporting Kansas City",
+    "name": "Sporting Kansas City",
+    "short_name": "SKC"
+  },
+  {
+    "id": 17012,
+    "full_name": "St. Louis City SC",
+    "name": "St. Louis City SC",
+    "short_name": "STL"
+  },
+  {
+    "id": 2077,
+    "full_name": "Toronto FC",
+    "name": "Toronto FC",
+    "short_name": "TOR"
+  },
+  {
+    "id": 1708,
+    "full_name": "Vancouver Whitecaps FC",
+    "name": "Vancouver Whitecaps FC",
+    "short_name": "VAN"
+  }
+]
