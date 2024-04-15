@@ -1,7 +1,8 @@
 box::use(
   bslib,
-  purrr[map, map_chr, map2, walk, keep],
-  shiny,
+  gargoyle[watch],
+  purrr[map, map_chr, map2, walk],
+  shiny
 )
 
 box::use(
@@ -25,9 +26,19 @@ server <- function(id, position, team) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
+    app <- session$userData$AppState
+    team <- app$get_team()
+    
     output$container <- shiny$renderUI({
-      shiny$req(team())
-      players <- keep(team(), \(player) player$position == position)
+      watch(paste0(position, "_updated"))
+      
+      players <- switch(
+        position,
+        "FWD" = team$get_forwards(),
+        "MID" = team$get_mids(),
+        "DEF" = team$get_defs(),
+        "GK" = team$get_gk()
+      )
       
       card_ids <- map_chr(players, \(player) paste0("card_", player$player_id))
       card_ids_ns <- map(card_ids, ns)
@@ -55,7 +66,7 @@ server <- function(id, position, team) {
         card_ids_ns,
         players,
         \(id, player) {
-          player_card$ui(id, player, TRUE)
+          player_card$ui(id, player, teams_page = TRUE)
         }
       )
       
@@ -63,7 +74,7 @@ server <- function(id, position, team) {
         card_ids,
         players,
         \(id, player) {
-          player_card$server(id, player, team)
+          player_card$server(id, player)
         }
       )
       

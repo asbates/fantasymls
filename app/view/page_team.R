@@ -1,7 +1,8 @@
 box::use(
   bslib,
+  gargoyle[watch],
   purrr[map, map_chr, map2, map_int, map_dbl, keep, pluck],
-  shiny,
+  shiny
 )
 
 box::use(
@@ -24,24 +25,24 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id, team) {
+server <- function(id) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
+    app <- session$userData$AppState
+    team <- app$get_team()
+    
     output$team_stats <- shiny$renderUI({
-      shiny$req(team())
       
-      total_cost <- map_int(team(), "cost") |> 
-        sum()
+      watch("FWD_updated")
+      watch("MID_updated")
+      watch("DEF_updated")
+      watch("GK_updated")
       
-      total_avg_points <- map_dbl(team(), c("stats", "avg_points")) |> 
-        sum()
-      
-      total_projected_points <- map_dbl(
-        team(),
-        pluck(list("stats", "projected_scores", 1))
-      ) |> 
-        sum()
+      team_stats <- team$get_team_stats()
+      total_cost <- team_stats$total_cost
+      total_avg_points <- team_stats$total_avg_points
+      total_projected_points <- team_stats$total_projected_points
       
       shiny$tagList(
         shiny$tags$div(
@@ -63,10 +64,10 @@ server <- function(id, team) {
       
     })
     
-    team_positions$server("forwards", "FWD", team)
-    team_positions$server("mids", "MID", team)
-    team_positions$server("defs", "DEF", team)
-    team_positions$server("gk", "GK", team)
+    team_positions$server("forwards", "FWD")
+    team_positions$server("mids", "MID")
+    team_positions$server("defs", "DEF")
+    team_positions$server("gk", "GK")
     
   })
 }

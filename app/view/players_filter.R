@@ -1,6 +1,7 @@
 box::use(
   config,
-  purrr[map_chr, keep],
+  gargoyle[trigger],
+  purrr[map_chr],
   shiny
 )
 
@@ -27,25 +28,20 @@ ui <- function(id) {
 }
 
 #' @export
-server <- function(id, all_players) {
+server <- function(id) {
   shiny$moduleServer(id, function(input, output, session) {
     
-    players_filtered <- shiny$reactive({
-      
-      filtered_players <- all_players
-      
-      if (input$position != "Any") {
-        filtered_players <- keep(filtered_players, \(player) player$position == input$position)
-      }
-      
-      if (length(input$squad) >= 1) {
-        filtered_players <- keep(filtered_players, \(player) player$squad$name %in% input$squad)
-      }
-      
-      filtered_players
+    shiny$observeEvent(input$position, {
+      app <- session$userData$AppState
+      app$set_position_filter(input$position)
+      trigger("filter_set")
     })
     
-    players_filtered
+    shiny$observeEvent(input$position, {
+      app <- session$userData$AppState
+      app$set_squad_filter(input$squad)
+      trigger("filter_set")
+    })
     
   })
 }

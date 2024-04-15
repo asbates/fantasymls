@@ -1,8 +1,9 @@
 box::use(
   bslib,
   config,
+  gargoyle[watch],
   purrr[map, map2, walk, map_chr],
-  shiny,
+  shiny
 )
 
 box::use(
@@ -26,18 +27,23 @@ ui <- function(id) {
 
 
 #' @export
-server <- function(id, all_players, team) {
+server <- function(id) {
   shiny$moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
-    players_filtered <- players_filter$server("filters", all_players)
-    players_filtered_sorted <- players_sort$server("sort", players_filtered)
+    players_filter$server("filters")
+    players_sort$server("sort")
     
     output$player_cards <- shiny$renderUI({
-      shiny$req(players_filtered_sorted())
-      card_ids <- map_chr(players_filtered_sorted(), \(player) paste0("card_", player$player_id))
-      card_ids_ns <- map(card_ids, ns)
+      watch("filter_set")
+      watch("sort_set")
       
+      app <- session$userData$AppState
+      team <- app$get_team()
+      players <- app$get_sorted_and_filtered_players()
+      card_ids <- map_chr(players, \(player) paste0("card_", player$player_id))
+      card_ids_ns <- map(card_ids, ns)
+
       walk(
         names(session$userData$add_observers),
         \(observer_id) {
@@ -56,29 +62,24 @@ server <- function(id, all_players, team) {
           }
         }
       )
-      
-      team_player_ids <- map_chr(shiny$isolate(team()), \(player) player$player_id)
-      
+
       player_cards <- map2(
         card_ids_ns,
-        players_filtered_sorted(),
+        players,
         \(id, player) {
-          on_team <- 
-            if (length(team_player_ids) > 0 && 
-                player$player_id %in% team_player_ids)
-              TRUE else FALSE
+          on_team <- team$is_player_on_team(player)
           player_card$ui(id, player, on_team = on_team)
         }
       )
-      
+
       map2(
         card_ids,
-        players_filtered_sorted(),
+        players,
         \(id, player) {
-          player_card$server(id, player, team)
+          player_card$server(id, player)
         }
       )
-      
+
       bslib$layout_column_wrap(
         width = 1/4,
         !!!player_cards

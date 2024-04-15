@@ -1,14 +1,15 @@
 box::use(
   bslib,
   config,
-  shiny[moduleServer, NS, tags, reactiveVal, tagList],
-  shinyjs[useShinyjs],
-  purrr[map]
+  gargoyle[init],
+  shiny[moduleServer, NS, tags, tagList],
+  shinyjs[useShinyjs]
 )
 
 box::use(
   app/view/page_players,
-  app/view/page_team
+  app/view/page_team,
+  app/logic/App[App]
 )
 
 #' @export
@@ -38,11 +39,14 @@ ui <- function(id) {
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    all_players <- readRDS(config$get("players"))
-    team <- reactiveVal()
+    session$userData[["AppState"]] <- App$new(config$get("players"))
     
-    page_players$server("players", all_players, team)
-    page_team$server("team", team)
+    init("filter_set")
+    init("sort_set")
+    init("FWD_updated", "MID_updated", "DEF_updated", "GK_updated")
+    
+    page_players$server("players")
+    page_team$server("team")
     
   })
 }

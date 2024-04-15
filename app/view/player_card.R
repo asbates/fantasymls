@@ -1,15 +1,14 @@
 box::use(
   bslib,
   echarts4r,
-  purrr[discard, map_chr, map, list_rbind],
-  scales[dollar, percent],
+  gargoyle[trigger],
   shiny,
   shinyjs[disable, disabled, enable],
   utils[tail]
 )
 
 box::use(
-  app/logic/utils[player_is_addable, prettify_cost]
+  app/logic/utils[prettify_cost]
 )
 
 #' @export
@@ -135,85 +134,47 @@ player_salary_ui <- function(ns, player) {
 }
 
 #' @export
-server <- function(id, player, team) {
+server <- function(id, player) {
   shiny$moduleServer(id, function(input, output, session) {
     
-    output$season_points <- echarts4r$renderEcharts4r({
-      
-      all_rounds <- paste("Round", 1:4)
-      
-      player_rounds <- paste("Round", names(player$stats$scores))
-      player_scores <- as.numeric(player$stats$scores)
-      names(player_scores) <- player_rounds
-      
-      points <- map(
-        all_rounds,
-        \(round) {
-          if (round %in% player_rounds) {
-            data.frame(round = round, points = unname(player_scores[round]))
-          } else {
-            data.frame(round = round, points = NA)
-          }
-        }
-      ) |> 
-        list_rbind()
-      
-      points |> 
-        echarts4r$e_charts(round) |> 
-        echarts4r$e_line(points) |> 
-        echarts4r$e_tooltip() |> 
-        echarts4r$e_legend(show = FALSE) |> 
-        echarts4r$e_color("#78c2ad")
-      
-    })
+    app <- session$userData$AppState
+    team <- app$get_team()
     
+    output$season_points <- echarts4r$renderEcharts4r({
+      team$get_points_history(player) |>
+        echarts4r$e_charts(round) |>
+        echarts4r$e_line(points) |>
+        echarts4r$e_tooltip() |>
+        echarts4r$e_legend(show = FALSE) |>
+        echarts4r$e_color("#78c2ad")
+    })
+
     output$season_salary <- echarts4r$renderEcharts4r({
-      
-      rounds <- paste("Round", names(player$stats$prices))
-      player_salaries <- as.numeric(player$stats$prices)
-      player_salaries <- player_salaries / 1e6
-      salaries <- data.frame(round = rounds, salary = player_salaries)
-      
-      salaries |> 
-        echarts4r$e_charts(round) |> 
-        echarts4r$e_line(salary) |> 
-        echarts4r$e_tooltip() |> 
-        echarts4r$e_legend(show = FALSE) |> 
-        echarts4r$e_color("#78c2ad") |> 
-        echarts4r$e_format_y_axis(prefix = "$", suffix = "M") |> 
+      team$get_salary_history(player) |>
+        echarts4r$e_charts(round) |>
+        echarts4r$e_line(salary) |>
+        echarts4r$e_tooltip() |>
+        echarts4r$e_legend(show = FALSE) |>
+        echarts4r$e_color("#78c2ad") |>
+        echarts4r$e_format_y_axis(prefix = "$", suffix = "M") |>
         echarts4r::e_grid(left = "15%")
-      
+
     })
     
     session$userData$add_observers[[id]] <- shiny$observeEvent(input$add, {
-      
-      if (player_is_addable(player, team())) {
-        team(
-          append(team(), list(player))
-        )
+      player_added <- team$add_player(player)
+      if (player_added) {
+        disable("add")
+        enable("remove")
+        trigger(paste0(player$position, "_updated"))
       }
-      
     })
     
     session$userData$remove_observerse[[id]] <- shiny$observeEvent(input$remove, {
-      if (is.null(team())) {
-        return()
-      } else {
-        team(
-          discard(team(), \(plr) plr$player_id == player$player_id)
-        )
-      }
-    })
-    
-    shiny$observeEvent(team(), {
-      player_ids <- map_chr(team(), \(player) player$player_id)
-      if (player$player_id %in% player_ids) {
-        disable("add")
-        enable("remove")
-      } else {
-        enable("add")
-        disable("remove")
-      }
+      team$remove_player(player)
+      enable("add")
+      disable("remove")
+      trigger(paste0(player$position, "_updated"))
     })
     
   })
