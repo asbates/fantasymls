@@ -37,7 +37,7 @@ server <- function(id) {
       trigger("filter_set")
     })
     
-    shiny$observeEvent(input$position, {
+    shiny$observeEvent(input$squad, {
       app <- session$userData$AppState
       app$set_squad_filter(input$squad)
       trigger("filter_set")
