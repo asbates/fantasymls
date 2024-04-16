@@ -75,7 +75,7 @@ Team <- R6::R6Class(
       player$player_id %in% names(private$players)
     },
     get_points_history = function(player) {
-      all_rounds <- paste("Round", 1:4)
+      all_rounds <- paste("Round", 1:8)
 
       player_rounds <- paste("Round", names(player$stats$scores))
       player_scores <- as.numeric(player$stats$scores)
