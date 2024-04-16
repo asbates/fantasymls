@@ -140,7 +140,7 @@ server <- function(id, player, team) {
     
     output$season_points <- echarts4r$renderEcharts4r({
       
-      all_rounds <- paste("Round", 1:4)
+      all_rounds <- paste("Round", 1:8)
       
       player_rounds <- paste("Round", names(player$stats$scores))
       player_scores <- as.numeric(player$stats$scores)
